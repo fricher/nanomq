@@ -1,6 +1,4 @@
 aux_source_directory(. DIR_LIB_SRCS)
-include_directories(${CMAKE_SOURCE_DIR}/nanomq/include)
-include_directories(${CMAKE_SOURCE_DIR}/nng/include/nng)
 
 # find_library(LIBRT rt) 
 
@@ -13,6 +11,8 @@ else()
     add_library (apps ${DIR_LIB_SRCS})
     target_link_libraries(apps ${LIBRT})
 endif()
+
+target_include_directories(apps PRIVATE ${NANOMQ_SOURCE_DIR}/nanomq ${NANOMQ_SOURCE_DIR}/nng/include/nng)
 
 target_link_libraries(apps nng)
 target_compile_definitions(apps PRIVATE -DPARALLEL=${PARALLEL})

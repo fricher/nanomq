@@ -10,6 +10,8 @@ SET(CMAKE_C_STANDARD 99)
 
 project(nanomq-nng)
 
+set(NANOMQ_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 include(CheckCCompilerFlag)
 
 set(CMAKE_MODULE_PATH

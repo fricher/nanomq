@@ -21,13 +21,6 @@ endif(DEBUG AND TSAN)
 
 aux_source_directory(. DIRSRCS)
 
-include_directories(./)
-include_directories(${CMAKE_SOURCE_DIR}/nanomq/include)
-include_directories(${CMAKE_SOURCE_DIR}/nng/include/nng)
-if(ENABLE_JWT)
-  include_directories(${CMAKE_SOURCE_DIR}/extern/l8w8jwt/include)
-endif(ENABLE_JWT)
-
 add_subdirectory(apps)
 
 # set(PARALLEL 128 CACHE STRING "Parallelism (min 4, max 1000)")
@@ -53,7 +46,6 @@ set(SOURCES
     )
     # db_cli.c)
 
-include_directories(${FOUNDATION_INCLUDE_DIR})
 
 if(BUILD_STATIC_LIB)
   add_library(nanomq  ${SOURCES})
@@ -63,6 +55,17 @@ elseif (BUILD_SHARED_LIBS)
 else()
   add_executable(nanomq ${SOURCES})
 endif()
+
+target_include_directories(nanomq PUBLIC
+  $<BUILD_INTERFACE:${NANOMQ_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${NANOMQ_SOURCE_DIR}/nanomq/include>
+  $<BUILD_INTERFACE:${NANOMQ_SOURCE_DIR}/nng/include/nng>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  ${FOUNDATION_INCLUDE_DIR})
+
+if(ENABLE_JWT)
+  target_include_directories(nanomq PRIVATE ${NANOMQ_SOURCE_DIR}/extern/l8w8jwt/include)
+endif(ENABLE_JWT)
 
 if(ENABLE_RULE_ENGINE)
   target_link_libraries(nanomq ${FOUNDATION_LIBRARY})
@@ -75,8 +78,8 @@ if(ENABLE_RULE_ENGINE)
   endforeach()
 
   link_directories(${LIBMYSQLCLIENT_LIBRARY_DIRS})
-  include_directories(${MYSQL_INCLUDE_DIR})
-  include_directories(${LIBMYSQLCLIENT_INCLUDE_DIRS})
+  target_include_directories(nanomq PRIVATE ${MYSQL_INCLUDE_DIR})
+  target_include_directories(nanomq PRIVATE ${LIBMYSQLCLIENT_INCLUDE_DIRS})
   # message(STATUS, "${LIBMYSQLCLIENT_INCLUDE_DIRS}")
   target_link_libraries(nanomq ${LIBMYSQLCLIENT_LIBRARIES})
 

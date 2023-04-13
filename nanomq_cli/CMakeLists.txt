@@ -14,7 +14,7 @@ endif(DEBUG AND TSAN)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dds2mqtt)
-include_directories(${CMAKE_SOURCE_DIR}/nng/include/nng)
+include_directories(${NANOMQ_SOURCE_DIR}/nng/include/nng)
 
 file(GLOB CLI_SOURCE "*.c" "dds2mqtt/*.c")
 
@@ -30,7 +30,7 @@ add_executable(nanomq_cli ${CLI_SOURCE})
 
 if(BUILD_DDS_PROXY)
   if(NOT IDL_FILE_PATH)
-    set(IDL_FILE_PATH "${CMAKE_SOURCE_DIR}/etc/idl/dds_type.idl")
+    set(IDL_FILE_PATH "${NANOMQ_SOURCE_DIR}/etc/idl/dds_type.idl")
     message("Set default idl file path: ${IDL_FILE_PATH}")
   else()
     message("Set user's idl file path: ${IDL_FILE_PATH}")
